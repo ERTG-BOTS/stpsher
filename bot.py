@@ -11,9 +11,12 @@ from aiogram.types import (
     BotCommandScopeAllGroupChats,
     BotCommandScopeAllPrivateChats,
 )
+from aiogram_dialog import setup_dialogs
 
 from infrastructure.database.setup import create_engine, create_session_pool
 from tgbot.config import Config, load_config
+from tgbot.dialogs.roles.head.main import head_dialog
+from tgbot.dialogs.roles.user.main import user_dialog
 from tgbot.handlers import routers_list
 from tgbot.middlewares.ConfigMiddleware import ConfigMiddleware
 from tgbot.middlewares.DatabaseMiddleware import DatabaseMiddleware
@@ -99,7 +102,10 @@ async def main():
 
     # Определение команд для приватных чатов
     await bot.set_my_commands(
-        commands=[BotCommand(command="start", description="Главное меню")],
+        commands=[
+            BotCommand(command="start", description="Главное меню"),
+            BotCommand(command="whois", description="Поиск сотрудников"),
+        ],
         scope=BotCommandScopeAllPrivateChats(),
     )
     await bot.set_my_commands(
@@ -157,6 +163,8 @@ async def main():
     dp["kpi_db"] = kpi_db
 
     dp.include_routers(*routers_list)
+    dp.include_routers(user_dialog, head_dialog)
+    setup_dialogs(dp)
 
     register_middlewares(dp, bot_config, bot, main_db, kpi_db)
 

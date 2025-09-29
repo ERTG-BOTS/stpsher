@@ -27,8 +27,13 @@ services:
     command: redis-server --port $REDIS_PORT --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
     env_file:
       - ".env"
+    ports:
+      - "6379:6379"
     volumes:
       - cache:/data
+
+    networks:
+      - stp_bots
 
 volumes:
   cache: { }

@@ -18,7 +18,7 @@ from tgbot.filters.role import (
     RootFilter,
     SpecialistFilter,
 )
-from tgbot.handlers.user.schedule.main import schedule_service
+from tgbot.handlers.user.schedule.main import ScheduleHandlerService
 from tgbot.misc.helpers import get_role
 
 logger = logging.getLogger(__name__)
@@ -33,6 +33,8 @@ user_inline_router.inline_query.filter(
         DutyFilter(),
     )
 )
+
+schedule_service = ScheduleHandlerService()
 
 
 class InlineSearchFilter:

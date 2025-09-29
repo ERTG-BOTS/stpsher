@@ -1,6 +1,6 @@
 import datetime
 
-from .calculator import SalaryCalculationResult
+from .salary_calculator import SalaryCalculationResult
 
 
 class SalaryFormatter:

@@ -2,14 +2,17 @@ import logging
 
 from aiogram import F, Router
 from aiogram.filters import Command, CommandStart
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import Message
+from aiogram_dialog import DialogManager, StartMode
+from aiogram_dialog.api.exceptions import NoContextError
 
 from infrastructure.database.models import Employee
 from infrastructure.database.repo.STP.requests import MainRequestsRepo
 from tgbot.handlers.group.whois import create_user_info_message
 from tgbot.handlers.user.search.main import user_search_router
-from tgbot.keyboards.user.main import MainMenu, auth_kb, main_kb
+from tgbot.keyboards.user.main import auth_kb
 from tgbot.misc.helpers import get_role
+from tgbot.misc.states.user.main import UserSG
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +25,9 @@ user_router.include_router(user_search_router)
 
 
 @user_router.message(CommandStart())
-async def user_start_cmd(message: Message, user: Employee):
+async def user_start_cmd(
+    message: Message, user: Employee, dialog_manager: DialogManager, **kwargs
+):
     if not user:
         await message.answer(
             """👋 Привет
@@ -34,37 +39,12 @@ async def user_start_cmd(message: Message, user: Employee):
         )
         return
 
-    await message.answer(
-        f"""👋 Привет, <b>{user.fullname}</b>!
+    try:
+        await dialog_manager.done()
+    except NoContextError:
+        pass
 
-Я - бот-помощник СТП
-
-<i>Используй меню для взаимодействия с ботом</i>""",
-        reply_markup=main_kb(),
-    )
-
-
-@user_router.callback_query(MainMenu.filter(F.menu == "main"))
-async def user_start_cb(callback: CallbackQuery, user: Employee):
-    if not user:
-        await callback.message.edit_text(
-            """👋 Привет
-
-Я - бот-помощник СТП
-
-Используй кнопку ниже для авторизации""",
-            reply_markup=auth_kb(),
-        )
-        return
-
-    await callback.message.edit_text(
-        f"""👋 Привет, <b>{user.fullname}</b>!
-
-Я - бот-помощник СТП
-
-<i>Используй меню для взаимодействия с ботом</i>""",
-        reply_markup=main_kb(),
-    )
+    await dialog_manager.start(UserSG.menu, mode=StartMode.RESET_STACK)
 
 
 @user_router.message(Command("whois"))

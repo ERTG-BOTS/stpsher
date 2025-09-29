@@ -90,6 +90,12 @@ class ScheduleHandlerService:
         """Получает текущий месяц"""
         return russian_months[datetime.datetime.now().month]
 
+    @staticmethod
+    def get_current_date():
+        """Получает текущую дату по Екатеринбургу"""
+        yekaterinburg_tz = pytz.timezone("Asia/Yekaterinburg")
+        return datetime.datetime.now(yekaterinburg_tz)
+
     def parse_date_from_callback(self, date_str: str) -> datetime.datetime:
         """Парсит дату из callback data"""
         target_date = datetime.datetime.strptime(date_str, "%Y-%m-%d")

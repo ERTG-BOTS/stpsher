@@ -7,8 +7,8 @@ from aiogram.types import CallbackQuery
 from infrastructure.database.models import Employee
 from infrastructure.database.repo.KPI.requests import KPIRequestsRepo
 from infrastructure.database.repo.STP.requests import MainRequestsRepo
+from tgbot.dialogs.getters.common.schedule_getters import schedule_service
 from tgbot.filters.role import HeadFilter
-from tgbot.handlers.user.schedule.main import schedule_service
 from tgbot.keyboards.head.group.game_profile import (
     HeadMemberGameHistoryMenu,
     HeadMemberGameProfileMenu,

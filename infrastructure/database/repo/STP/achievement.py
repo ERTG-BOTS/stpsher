@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from sqlalchemy import select
 
@@ -7,7 +7,7 @@ from infrastructure.database.repo.base import BaseRepo
 
 
 class AchievementsRepo(BaseRepo):
-    async def get_achievements(self, division: str = None):
+    async def get_achievements(self, division: str = None) -> List[Achievement]:
         """
         Получаем полный список достижений
 
